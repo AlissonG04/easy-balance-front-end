@@ -5,9 +5,9 @@ const Usuarios = () => {
   const navigate = useNavigate();
 
   const [usuarios, setUsuarios] = useState([
-    { id: 1, nome: "Jhon", tipo: "Admin" },
-    { id: 2, nome: "Jane", tipo: "Desktop" },
-    { id: 3, nome: "Pedro", tipo: "Operador" },
+    { id: 1, nome: "Jhon", tipo: "Admin", senha: "" },
+    { id: 2, nome: "Jane", tipo: "Desktop", senha: "" },
+    { id: 3, nome: "Pedro", tipo: "Operador", senha: "" },
   ]);
 
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -16,6 +16,7 @@ const Usuarios = () => {
     tipo: "Admin",
     senha: "",
   });
+  const [usuarioEditando, setUsuarioEditando] = useState(null);
 
   const handleSalvar = () => {
     if (novoUsuario.nome.trim() === "" || novoUsuario.senha.trim() === "") {
@@ -32,9 +33,26 @@ const Usuarios = () => {
     setMostrarFormulario(false);
   };
 
+  const handleExcluir = (id) => {
+    const confirmar = window.confirm("Deseja realmente excluir este usuário?");
+    if (confirmar) {
+      setUsuarios((prev) => prev.filter((u) => u.id !== id));
+    }
+  };
+
+  const handleSalvarEdicao = () => {
+    if (usuarioEditando.nome.trim() === "") {
+      return alert("Nome obrigatório.");
+    }
+
+    setUsuarios((prev) =>
+      prev.map((u) => (u.id === usuarioEditando.id ? usuarioEditando : u))
+    );
+    setUsuarioEditando(null);
+  };
+
   return (
     <div className="min-h-screen bg-gray-300">
-      {/* TOPO */}
       <header className="bg-white flex justify-between items-center px-6 py-3 shadow">
         <div className="flex items-center space-x-2">
           <img src="/logo.png" alt="Logo" className="w-10" />
@@ -65,10 +83,8 @@ const Usuarios = () => {
         </div>
       </header>
 
-      {/* CONTEÚDO */}
       <main className="flex justify-center py-10">
         <div className="bg-white rounded p-6 shadow-md w-full max-w-3xl">
-          {/* TABELA */}
           <table className="w-full text-sm">
             <thead className="bg-gray-200">
               <tr>
@@ -83,10 +99,19 @@ const Usuarios = () => {
                   <td className="px-4 py-2">{usuario.nome}</td>
                   <td className="px-4 py-2">{usuario.tipo}</td>
                   <td className="px-4 py-2 space-x-2">
-                    <button className="bg-blue-700 text-white px-3 py-1 rounded">
+                    <button
+                      className="bg-blue-700 text-white px-3 py-1 rounded"
+                      onClick={() => {
+                        setUsuarioEditando(usuario);
+                        setMostrarFormulario(false);
+                      }}
+                    >
                       Editar
                     </button>
-                    <button className="bg-red-600 text-white px-3 py-1 rounded">
+                    <button
+                      className="bg-red-600 text-white px-3 py-1 rounded"
+                      onClick={() => handleExcluir(usuario.id)}
+                    >
                       Excluir
                     </button>
                   </td>
@@ -95,17 +120,18 @@ const Usuarios = () => {
             </tbody>
           </table>
 
-          {/* BOTÃO NOVO */}
           <div className="mt-6">
             <button
-              onClick={() => setMostrarFormulario(true)}
+              onClick={() => {
+                setMostrarFormulario(true);
+                setUsuarioEditando(null);
+              }}
               className="bg-green-600 hover:bg-green-700 text-white font-bold px-4 py-2 rounded"
             >
               Novo Usuário
             </button>
           </div>
 
-          {/* FORMULÁRIO */}
           {mostrarFormulario && (
             <div className="mt-6 bg-gray-100 p-4 rounded shadow">
               <h3 className="font-bold mb-4">Novo Usuário</h3>
@@ -119,7 +145,6 @@ const Usuarios = () => {
                   }
                   className="p-2 rounded bg-white"
                 />
-
                 <select
                   value={novoUsuario.tipo}
                   onChange={(e) =>
@@ -131,7 +156,6 @@ const Usuarios = () => {
                   <option value="Desktop">Desktop</option>
                   <option value="Operador">Operador</option>
                 </select>
-
                 <input
                   type="password"
                   placeholder="Senha"
@@ -151,6 +175,65 @@ const Usuarios = () => {
                 </button>
                 <button
                   onClick={() => setMostrarFormulario(false)}
+                  className="bg-gray-400 text-white px-4 py-2 rounded"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          )}
+
+          {usuarioEditando && (
+            <div className="mt-6 bg-gray-100 p-4 rounded shadow">
+              <h3 className="font-bold mb-4">Editar Usuário</h3>
+              <div className="flex flex-col gap-4 mb-4">
+                <input
+                  type="text"
+                  value={usuarioEditando.nome}
+                  onChange={(e) =>
+                    setUsuarioEditando({
+                      ...usuarioEditando,
+                      nome: e.target.value,
+                    })
+                  }
+                  className="p-2 rounded bg-white"
+                />
+                <select
+                  value={usuarioEditando.tipo}
+                  onChange={(e) =>
+                    setUsuarioEditando({
+                      ...usuarioEditando,
+                      tipo: e.target.value,
+                    })
+                  }
+                  className="p-2 rounded bg-white"
+                >
+                  <option value="Admin">Admin</option>
+                  <option value="Desktop">Desktop</option>
+                  <option value="Operador">Operador</option>
+                </select>
+                <input
+                  type="password"
+                  placeholder="Nova senha"
+                  value={usuarioEditando.senha || ""}
+                  onChange={(e) =>
+                    setUsuarioEditando({
+                      ...usuarioEditando,
+                      senha: e.target.value,
+                    })
+                  }
+                  className="p-2 rounded bg-white"
+                />
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleSalvarEdicao}
+                  className="bg-blue-700 text-white px-4 py-2 rounded"
+                >
+                  Salvar
+                </button>
+                <button
+                  onClick={() => setUsuarioEditando(null)}
                   className="bg-gray-400 text-white px-4 py-2 rounded"
                 >
                   Cancelar
