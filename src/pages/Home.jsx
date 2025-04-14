@@ -29,7 +29,10 @@ const Home = () => {
           >
             Balança
           </button>
-          <button className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-1 rounded">
+          <button
+            onClick={() => navigate("/relatorios")}
+            className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-1 rounded"
+          >
             Relatórios
           </button>
           <button className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-1 rounded">
