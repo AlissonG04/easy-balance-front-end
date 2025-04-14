@@ -35,7 +35,10 @@ const Home = () => {
           >
             Relatórios
           </button>
-          <button className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-1 rounded">
+          <button
+            onClick={() => navigate("/usuarios")}
+            className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-1 rounded"
+          >
             Usuários
           </button>
           <button
