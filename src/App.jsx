@@ -11,6 +11,7 @@ import Home from "./pages/Home";
 import Balanca from "./pages/Balanca";
 import Relatorios from "./pages/Relatorios";
 import Usuarios from "./pages/Usuarios";
+import Operador from "./pages/Operador";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/balanca" element={<Balanca />} />
         <Route path="/relatorios" element={<Relatorios />} />
         <Route path="/usuarios" element={<Usuarios />} />
+        <Route path="operador" element={<Operador />} />
       </Routes>
     </Router>
   );
