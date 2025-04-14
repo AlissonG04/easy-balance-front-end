@@ -28,6 +28,13 @@ const Balanca = () => {
           </select>
 
           <button
+            onClick={() => navigate("/home")}
+            className="bg-blue-700 hover:bg-blue-800 text-white font-bold px-4 py-1 rounded"
+          >
+            Voltar
+          </button>
+
+          <button
             onClick={() => navigate("/login")}
             className="bg-red-600 text-white font-bold px-4 py-1 rounded"
           >
