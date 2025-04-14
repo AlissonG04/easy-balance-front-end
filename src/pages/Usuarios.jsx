@@ -24,15 +24,23 @@ const Usuarios = () => {
     if (novoUsuario.nome.trim() === "" || novoUsuario.senha.trim() === "") {
       return alert("Preencha todos os campos obrigatórios.");
     }
-
     const novo = {
       id: usuarios.length + 1,
       ...novoUsuario,
     };
-
     setUsuarios([...usuarios, novo]);
     setNovoUsuario({ nome: "", tipo: "Admin", senha: "" });
     setMostrarFormulario(false);
+  };
+
+  const handleSalvarEdicao = () => {
+    if (usuarioEditando.nome.trim() === "") {
+      return alert("Nome obrigatório.");
+    }
+    setUsuarios((prev) =>
+      prev.map((u) => (u.id === usuarioEditando.id ? usuarioEditando : u))
+    );
+    setUsuarioEditando(null);
   };
 
   const handleExcluir = () => {
@@ -41,17 +49,6 @@ const Usuarios = () => {
       setModalExcluirAberto(false);
       setUsuarioParaExcluir(null);
     }
-  };
-
-  const handleSalvarEdicao = () => {
-    if (usuarioEditando.nome.trim() === "") {
-      return alert("Nome obrigatório.");
-    }
-
-    setUsuarios((prev) =>
-      prev.map((u) => (u.id === usuarioEditando.id ? usuarioEditando : u))
-    );
-    setUsuarioEditando(null);
   };
 
   return (
@@ -66,16 +63,10 @@ const Usuarios = () => {
 
         <div className="flex items-center space-x-2">
           <button
-            onClick={() => navigate("/balanca")}
-            className="bg-blue-700 text-white px-4 py-1 rounded"
+            onClick={() => navigate("/home")}
+            className="bg-blue-700 hover:bg-blue-800 text-white font-bold px-4 py-1 rounded"
           >
-            Balança
-          </button>
-          <button
-            onClick={() => navigate("/relatorios")}
-            className="bg-blue-700 text-white px-4 py-1 rounded"
-          >
-            Relatórios
+            Voltar
           </button>
           <button
             onClick={() => navigate("/login")}
@@ -247,39 +238,39 @@ const Usuarios = () => {
               </div>
             </div>
           )}
+
+          {modalExcluirAberto && usuarioParaExcluir && (
+            <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+              <div className="bg-white p-6 rounded shadow max-w-sm w-full">
+                <h2 className="text-lg font-bold mb-4 text-center">
+                  Confirmar Exclusão
+                </h2>
+                <p className="text-center mb-6">
+                  Deseja realmente excluir o usuário{" "}
+                  <strong>{usuarioParaExcluir.nome}</strong>?
+                </p>
+                <div className="flex justify-center gap-4">
+                  <button
+                    onClick={() => {
+                      setModalExcluirAberto(false);
+                      setUsuarioParaExcluir(null);
+                    }}
+                    className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={handleExcluir}
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+                  >
+                    Excluir
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </main>
-
-      {modalExcluirAberto && usuarioParaExcluir && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded shadow max-w-sm w-full">
-            <h2 className="text-lg font-bold mb-4 text-center">
-              Confirmar Exclusão
-            </h2>
-            <p className="text-center mb-6">
-              Deseja realmente excluir o usuário{" "}
-              <strong>{usuarioParaExcluir.nome}</strong>?
-            </p>
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={() => {
-                  setModalExcluirAberto(false);
-                  setUsuarioParaExcluir(null);
-                }}
-                className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleExcluir}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-              >
-                Excluir
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
