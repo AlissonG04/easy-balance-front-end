@@ -36,7 +36,7 @@ const AbaComplemento = ({ titulo }) => {
   );
 };
 
-const BalancaBox = ({ titulo }) => {
+const BalancaBox = ({ titulo, peso }) => {
   const [mostrarComplemento, setMostrarComplemento] = useState(false);
 
   return (
@@ -59,8 +59,9 @@ const BalancaBox = ({ titulo }) => {
           </button>
         </div>
 
+        {/* Peso vindo por props */}
         <div className="bg-gray-300 text-center text-5xl font-bold py-6 mb-4">
-          0
+          {peso ?? 0}
         </div>
 
         <div>
