@@ -7,7 +7,7 @@ const Login = () => {
   const [nome, setNome] = useState("");
   const [senha, setSenha] = useState("");
   const [carregadeira, setCarregadeira] = useState("");
-  const [usuario, setUsuario] = useState(null);
+  const [tipoUsuario, setTipoUsuario] = useState(null);
   const [erro, setErro] = useState("");
 
   const handleLogin = async () => {
@@ -25,14 +25,16 @@ const Login = () => {
       }
 
       const tipo = res.data.tipo;
+      setTipoUsuario(tipo);
 
       if (tipo === "operador") {
         if (!carregadeira) {
           return setErro("Informe o número da carregadeira.");
         }
 
-        // Aqui você poderia salvar a carregadeira no estado global/contexto, se quiser
-        navigate("/operador");
+        navigate("/operador", {
+          state: { paNumero: carregadeira },
+        });
       } else {
         navigate("/home");
       }
@@ -65,7 +67,7 @@ const Login = () => {
           className="w-full p-2 mb-4 rounded bg-gray-200"
         />
 
-        {usuario?.tipo === "Operador" && (
+        {tipoUsuario === "operador" && (
           <input
             type="number"
             placeholder="Num. Carregadeira:"
