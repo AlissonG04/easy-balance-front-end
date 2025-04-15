@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
+const socket = new WebSocket("ws://localhost:3000");
+
 const Operador = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -16,36 +18,33 @@ const Operador = () => {
   useEffect(() => {
     alertaSom.load();
 
-    const timer = setTimeout(() => {
-      setComplemento({
-        balanca: "Balança 01",
-        brutoDesejado: "32.500",
-      });
-      setMostrarAlerta(true);
+    const socketListener = (event) => {
+      const msg = JSON.parse(event.data);
 
-      alertaSom.play().catch((err) => {
-        console.warn(
-          "Áudio bloqueado pelo navegador. Precisa de interação.",
-          err
-        );
-      });
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    if (emCarregamento) {
-      const intervalo = setInterval(() => {
-        setPesoAtual((prev) => {
-          const novoPeso = prev + Math.floor(Math.random() * 500 + 100);
-          return novoPeso >= 32500 ? 32500 : novoPeso;
+      if (msg.tipo === "complemento-envio") {
+        setComplemento({
+          balanca: msg.dados.balanca,
+          brutoDesejado: msg.dados.brutoDesejado,
         });
-      }, 1000);
+        setMostrarAlerta(true);
 
-      return () => clearInterval(intervalo);
-    }
-  }, [emCarregamento]);
+        alertaSom.play().catch((err) => {
+          console.warn("Áudio bloqueado pelo navegador:", err);
+        });
+      }
+
+      if (msg.tipo === "peso-atual") {
+        const peso = parseFloat(msg.valor);
+        console.log("📦 Peso recebido:", peso);
+        if (!isNaN(peso)) {
+          setPesoAtual(peso);
+        }
+      }
+    };
+
+    socket.addEventListener("message", socketListener);
+    return () => socket.removeEventListener("message", socketListener);
+  }, []);
 
   const handleResposta = (resposta) => {
     if (resposta === "aceito") {

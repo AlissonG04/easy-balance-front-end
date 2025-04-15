@@ -1,9 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
-const AbaComplemento = ({ titulo }) => {
+const AbaComplemento = ({ titulo, pesoAtual, socket }) => {
   const [tara, setTara] = useState(0);
   const [liquido, setLiquido] = useState(0);
   const bruto = Number(tara) + Number(liquido);
+
+  const enviarComplemento = () => {
+    const complemento = {
+      balanca: titulo,
+      brutoDesejado: bruto,
+    };
+    if (socket?.readyState === 1) {
+      socket.send(
+        JSON.stringify({ tipo: "complemento-envio", dados: complemento })
+      );
+      console.log("📤 Enviado para o tablet:", complemento);
+    } else {
+      console.warn("⚠️ WebSocket não está conectado.");
+    }
+  };
 
   return (
     <div className="bg-white rounded shadow p-4 mt-4 w-full max-w-md mx-auto">
@@ -29,15 +44,63 @@ const AbaComplemento = ({ titulo }) => {
         </div>
       </div>
 
-      <button className="bg-green-600 text-white px-6 py-2 rounded block mx-auto">
+      <button
+        className="bg-green-600 text-white px-6 py-2 rounded block mx-auto"
+        onClick={enviarComplemento}
+      >
         Enviar
       </button>
     </div>
   );
 };
 
-const BalancaBox = ({ titulo, peso }) => {
+const BalancaBox = ({ titulo }) => {
   const [mostrarComplemento, setMostrarComplemento] = useState(false);
+  const [pesoAtual, setPesoAtual] = useState(0);
+  const socketRef = useRef(null);
+
+  const conectarWebSocket = () => {
+    const socket = new WebSocket("ws://localhost:3000");
+
+    socket.onopen = () => {
+      console.log("✅ WebSocket conectado");
+    };
+
+    socket.onerror = (err) => {
+      console.error("❌ Erro WebSocket:", err);
+    };
+
+    socket.onclose = () => {
+      console.warn("🔄 WebSocket desconectado. Tentando reconectar...");
+      setTimeout(conectarWebSocket, 2000);
+    };
+
+    socket.onmessage = (event) => {
+      const dados = JSON.parse(event.data);
+      console.log("📡 Peso recebido no front:", dados);
+
+      if (
+        dados.tipo === "peso-atual" &&
+        dados.balanca === titulo.toUpperCase()
+      ) {
+        const peso = parseFloat(dados.valor);
+        if (!isNaN(peso)) {
+          setPesoAtual(peso);
+        } else {
+          console.warn("⚠️ Peso inválido (NaN)");
+        }
+      }
+    };
+
+    socketRef.current = socket;
+  };
+
+  useEffect(() => {
+    conectarWebSocket();
+    return () => {
+      socketRef.current?.close();
+    };
+  }, [titulo]);
 
   return (
     <div className="flex flex-col items-center">
@@ -59,9 +122,8 @@ const BalancaBox = ({ titulo, peso }) => {
           </button>
         </div>
 
-        {/* Peso vindo por props */}
         <div className="bg-gray-300 text-center text-5xl font-bold py-6 mb-4">
-          {peso ?? 0}
+          {isNaN(pesoAtual) ? "—" : pesoAtual}
         </div>
 
         <div>
@@ -70,7 +132,13 @@ const BalancaBox = ({ titulo, peso }) => {
         </div>
       </div>
 
-      {mostrarComplemento && <AbaComplemento titulo={titulo} />}
+      {mostrarComplemento && (
+        <AbaComplemento
+          titulo={titulo}
+          pesoAtual={pesoAtual}
+          socket={socketRef.current}
+        />
+      )}
     </div>
   );
 };

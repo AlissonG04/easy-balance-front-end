@@ -6,46 +6,24 @@ const Balanca = () => {
   const navigate = useNavigate();
   const [tipo, setTipo] = useState("Balança 01");
 
-  const [peso1, setPeso1] = useState("--");
-  const [peso2, setPeso2] = useState("--");
-
-  function limparPeso(peso) {
-    if (!peso) return "--";
-
-    // Remove tudo que não for número
-    const apenasNumeros = peso.replace(/[^\d]/g, "");
-
-    // Remove zeros à esquerda
-    const pesoLimpo = apenasNumeros.replace(/^0+(?!$)/, "");
-
-    return pesoLimpo || "0";
-  }
-
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:3000"); // ou IP da máquina se em rede
-
-    socket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-
-      if (data.balanca === "balanca01") {
-        setPeso1(limparPeso(data.peso));
-      }
-
-      if (data.balanca === "balanca02") {
-        setPeso2(limparPeso(data.peso));
-      }
-    };
+    const socket = new WebSocket("ws://localhost:3000");
 
     socket.onopen = () => {
-      console.log("WebSocket conectado");
+      console.log("✅ WebSocket conectado (Balanca.jsx)");
     };
 
     socket.onerror = (err) => {
-      console.error("Erro WebSocket:", err);
+      console.error("❌ Erro WebSocket:", err);
     };
 
     socket.onclose = () => {
-      console.warn("WebSocket desconectado");
+      console.warn("🔄 WebSocket desconectado (Balanca.jsx)");
+    };
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("📩 Peso recebido em Balanca.jsx:", data);
     };
 
     return () => socket.close();
@@ -91,14 +69,11 @@ const Balanca = () => {
       <main className="flex justify-center items-start py-10 px-4 gap-8 flex-wrap">
         {tipo === "Simultâneo" ? (
           <>
-            <BalancaBox titulo="BALANÇA 01" peso={peso1} />
-            <BalancaBox titulo="BALANÇA 02" peso={peso2} />
+            <BalancaBox titulo="BALANÇA 01" />
+            <BalancaBox titulo="BALANÇA 02" />
           </>
         ) : (
-          <BalancaBox
-            titulo={tipo.toUpperCase()}
-            peso={tipo === "Balança 01" ? peso1 : peso2}
-          />
+          <BalancaBox titulo={tipo.toUpperCase()} />
         )}
       </main>
     </div>
