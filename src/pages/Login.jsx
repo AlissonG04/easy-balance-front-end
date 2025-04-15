@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const usuariosFake = [
-  { nome: "admin", senha: "123", tipo: "Admin" },
-  { nome: "jane", senha: "123", tipo: "Desktop" },
-  { nome: "pedro", senha: "123", tipo: "Operador" },
-];
+import api from "../services/api";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,31 +10,35 @@ const Login = () => {
   const [usuario, setUsuario] = useState(null);
   const [erro, setErro] = useState("");
 
-  const handleLogin = () => {
-    const encontrado = usuariosFake.find(
-      (u) => u.nome === nome && u.senha === senha
-    );
-
-    if (!encontrado) {
-      setErro("Usuário ou senha inválidos.");
-      setUsuario(null);
-      return;
-    }
-
-    setUsuario(encontrado); // seta primeiro o tipo de usuário
-
-    // Se for operador, mas ainda não digitou carregadeira, apenas exibe o campo
-    if (encontrado.tipo === "Operador" && !carregadeira) {
-      setErro("Informe o número da carregadeira.");
-      return;
-    }
-
-    // Libera acesso
+  const handleLogin = async () => {
     setErro("");
-    if (encontrado.tipo === "Admin" || encontrado.tipo === "Desktop") {
-      navigate("/home");
-    } else {
-      navigate("/operador");
+
+    if (!nome || !senha) {
+      return setErro("Preencha usuário e senha.");
+    }
+
+    try {
+      const res = await api.post("/login", { nome, senha });
+
+      if (!res.data.success) {
+        return setErro(res.data.message || "Falha no login.");
+      }
+
+      const tipo = res.data.tipo;
+
+      if (tipo === "operador") {
+        if (!carregadeira) {
+          return setErro("Informe o número da carregadeira.");
+        }
+
+        // Aqui você poderia salvar a carregadeira no estado global/contexto, se quiser
+        navigate("/operador");
+      } else {
+        navigate("/home");
+      }
+    } catch (err) {
+      console.error("Erro no login:", err.response?.data || err.message);
+      setErro("Usuário ou senha inválidos.");
     }
   };
 

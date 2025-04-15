@@ -64,7 +64,10 @@ const Usuarios = () => {
         const res = await api.get("/usuarios");
         setUsuarios(res.data);
       } catch (error) {
-        console.error("Erro ao excluir usuário:", error);
+        console.error(
+          "Erro ao excluir usuário:",
+          error.response?.data || error.message
+        );
       }
       setModalExcluirAberto(false);
       setUsuarioParaExcluir(null);
@@ -123,11 +126,8 @@ const Usuarios = () => {
                       Editar
                     </button>
                     <button
-                      className="bg-red-600 text-white px-3 py-1 rounded"
-                      onClick={() => {
-                        setUsuarioParaExcluir(usuario);
-                        setModalExcluirAberto(true);
-                      }}
+                      onClick={handleExcluir}
+                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
                     >
                       Excluir
                     </button>
