@@ -58,20 +58,27 @@ const Usuarios = () => {
   };
 
   const handleExcluir = async () => {
-    if (usuarioParaExcluir) {
-      try {
-        await api.delete(`/usuarios/${usuarioParaExcluir.id}`);
-        const res = await api.get("/usuarios");
-        setUsuarios(res.data);
-      } catch (error) {
-        console.error(
-          "Erro ao excluir usuário:",
-          error.response?.data || error.message
-        );
-      }
-      setModalExcluirAberto(false);
-      setUsuarioParaExcluir(null);
+    console.log("🚨 Tentando excluir:", usuarioParaExcluir);
+
+    if (!usuarioParaExcluir) {
+      console.warn("❗ Nenhum usuário selecionado para exclusão.");
+      return;
     }
+
+    try {
+      await api.delete(`/usuarios/${usuarioParaExcluir.id}`);
+      console.log("✅ Usuário excluído com sucesso");
+      const res = await api.get("/usuarios");
+      setUsuarios(res.data);
+    } catch (error) {
+      console.error(
+        "Erro ao excluir usuário:",
+        error.response?.data || error.message
+      );
+    }
+
+    setModalExcluirAberto(false);
+    setUsuarioParaExcluir(null);
   };
 
   return (
@@ -126,7 +133,11 @@ const Usuarios = () => {
                       Editar
                     </button>
                     <button
-                      onClick={handleExcluir}
+                      onClick={() => {
+                        console.log("🗑️ Clique em EXCLUIR detectado");
+                        setUsuarioParaExcluir(usuario);
+                        setModalExcluirAberto(true);
+                      }}
                       className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
                     >
                       Excluir
