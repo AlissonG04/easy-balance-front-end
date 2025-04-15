@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Operador = () => {
   const navigate = useNavigate();
-  const numeroCarregadeira = "01";
+  const location = useLocation();
+  const numeroCarregadeira = location.state?.paNumero || "-";
+
   const [complemento, setComplemento] = useState(null);
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
   const [emCarregamento, setEmCarregamento] = useState(false);
