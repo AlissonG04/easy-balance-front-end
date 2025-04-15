@@ -1,51 +1,71 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 
 const Usuarios = () => {
   const navigate = useNavigate();
 
-  const [usuarios, setUsuarios] = useState([
-    { id: 1, nome: "Jhon", tipo: "Admin", senha: "" },
-    { id: 2, nome: "Jane", tipo: "Desktop", senha: "" },
-    { id: 3, nome: "Pedro", tipo: "Operador", senha: "" },
-  ]);
-
+  const [usuarios, setUsuarios] = useState([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [novoUsuario, setNovoUsuario] = useState({
     nome: "",
-    tipo: "Admin",
+    tipo: "admin",
     senha: "",
   });
   const [usuarioEditando, setUsuarioEditando] = useState(null);
   const [modalExcluirAberto, setModalExcluirAberto] = useState(false);
   const [usuarioParaExcluir, setUsuarioParaExcluir] = useState(null);
 
-  const handleSalvar = () => {
+  useEffect(() => {
+    async function carregarUsuarios() {
+      try {
+        const res = await api.get("/usuarios");
+        setUsuarios(res.data);
+      } catch (error) {
+        console.error("Erro ao carregar usuários:", error);
+      }
+    }
+    carregarUsuarios();
+  }, []);
+
+  const handleSalvar = async () => {
     if (novoUsuario.nome.trim() === "" || novoUsuario.senha.trim() === "") {
       return alert("Preencha todos os campos obrigatórios.");
     }
-    const novo = {
-      id: usuarios.length + 1,
-      ...novoUsuario,
-    };
-    setUsuarios([...usuarios, novo]);
-    setNovoUsuario({ nome: "", tipo: "Admin", senha: "" });
-    setMostrarFormulario(false);
+    try {
+      await api.post("/usuarios", novoUsuario);
+      const res = await api.get("/usuarios");
+      setUsuarios(res.data);
+      setNovoUsuario({ nome: "", tipo: "admin", senha: "" });
+      setMostrarFormulario(false);
+    } catch (error) {
+      console.error("Erro ao criar usuário:", error);
+    }
   };
 
-  const handleSalvarEdicao = () => {
+  const handleSalvarEdicao = async () => {
     if (usuarioEditando.nome.trim() === "") {
       return alert("Nome obrigatório.");
     }
-    setUsuarios((prev) =>
-      prev.map((u) => (u.id === usuarioEditando.id ? usuarioEditando : u))
-    );
-    setUsuarioEditando(null);
+    try {
+      await api.put(`/usuarios/${usuarioEditando.id}`, usuarioEditando);
+      const res = await api.get("/usuarios");
+      setUsuarios(res.data);
+      setUsuarioEditando(null);
+    } catch (error) {
+      console.error("Erro ao editar usuário:", error);
+    }
   };
 
-  const handleExcluir = () => {
+  const handleExcluir = async () => {
     if (usuarioParaExcluir) {
-      setUsuarios((prev) => prev.filter((u) => u.id !== usuarioParaExcluir.id));
+      try {
+        await api.delete(`/usuarios/${usuarioParaExcluir.id}`);
+        const res = await api.get("/usuarios");
+        setUsuarios(res.data);
+      } catch (error) {
+        console.error("Erro ao excluir usuário:", error);
+      }
       setModalExcluirAberto(false);
       setUsuarioParaExcluir(null);
     }
@@ -149,9 +169,9 @@ const Usuarios = () => {
                   }
                   className="p-2 rounded bg-white"
                 >
-                  <option value="Admin">Admin</option>
-                  <option value="Desktop">Desktop</option>
-                  <option value="Operador">Operador</option>
+                  <option value="admin">Admin</option>
+                  <option value="desktop">Desktop</option>
+                  <option value="operador">Operador</option>
                 </select>
                 <input
                   type="password"
@@ -205,9 +225,9 @@ const Usuarios = () => {
                   }
                   className="p-2 rounded bg-white"
                 >
-                  <option value="Admin">Admin</option>
-                  <option value="Desktop">Desktop</option>
-                  <option value="Operador">Operador</option>
+                  <option value="admin">Admin</option>
+                  <option value="desktop">Desktop</option>
+                  <option value="operador">Operador</option>
                 </select>
                 <input
                   type="password"
