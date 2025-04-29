@@ -68,7 +68,7 @@ function salvarEdicaoUsuario() {
   fecharModalEdicao();
 }
 
-// Exemplo: ao clicar em editar (você pode adaptar isso com base nos dados reais)
+//Adaptar com base real da API - Fururamente
 document.querySelectorAll(".btn.blue").forEach((btn) => {
   if (btn.textContent.includes("Editar")) {
     btn.addEventListener("click", () => {
