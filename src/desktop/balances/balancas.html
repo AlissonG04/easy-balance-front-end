@@ -24,7 +24,6 @@
         </div>
         <div class="display">0</div>
       </div>
-
       <div class="balanca-card">
         <h2>BALANÇA 02</h2>
         <div class="actions">
@@ -35,5 +34,27 @@
         <div class="display">0</div>
       </div>
     </main>
+    <div id="modal-complemento" class="modal-overlay">
+      <div class="modal">
+        <h2>Solicitar Complemento</h2>
+        <label>Placa:</label>
+        <input type="text" id="placa" />
+
+        <label>Tara (kg):</label>
+        <input type="number" id="tara" oninput="atualizarBruto()" />
+
+        <label>Líquido (kg):</label>
+        <input type="number" id="liquido" oninput="atualizarBruto()" />
+
+        <label>Bruto (kg):</label>
+        <input type="number" id="bruto" disabled />
+
+        <div class="modal-actions">
+          <button class="btn blue" onclick="enviarComplemento()">Enviar</button>
+          <button class="btn red" onclick="fecharModal()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+    <script src="./script.js"></script>
   </body>
 </html>
