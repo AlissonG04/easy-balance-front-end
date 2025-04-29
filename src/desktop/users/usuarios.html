@@ -83,6 +83,33 @@
         </div>
       </div>
     </div>
+    <div id="modal-editar-usuario" class="modal-overlay">
+      <div class="modal">
+        <h2>Editar Usuário</h2>
+
+        <label>Usuário:</label>
+        <input type="text" id="editar-usuario-nome" />
+
+        <label>Nova Senha (opcional):</label>
+        <input type="password" id="editar-usuario-senha" />
+
+        <label>Tipo:</label>
+        <select id="editar-usuario-tipo">
+          <option value="Administrador">Administrador</option>
+          <option value="Desktop">Desktop</option>
+          <option value="Operador">Operador</option>
+        </select>
+
+        <div class="modal-actions">
+          <button class="btn blue" onclick="salvarEdicaoUsuario()">
+            Salvar Alterações
+          </button>
+          <button class="btn red" onclick="fecharModalEdicao()">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
     <script src="./usuarios.js"></script>
   </body>
 </html>

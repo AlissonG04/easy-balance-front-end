@@ -26,3 +26,59 @@ function salvarNovoUsuario() {
 
   fecharModalUsuario();
 }
+
+let usuarioEditandoId = null;
+
+function abrirModalEdicao(usuario) {
+  usuarioEditandoId = usuario.id;
+
+  document.getElementById("editar-usuario-nome").value = usuario.nome;
+  document.getElementById("editar-usuario-senha").value = "";
+  document.getElementById("editar-usuario-tipo").value = usuario.tipo;
+
+  document.getElementById("modal-editar-usuario").style.display = "flex";
+}
+
+function fecharModalEdicao() {
+  document.getElementById("modal-editar-usuario").style.display = "none";
+  document.getElementById("editar-usuario-nome").value = "";
+  document.getElementById("editar-usuario-senha").value = "";
+  document.getElementById("editar-usuario-tipo").value = "Administrador";
+  usuarioEditandoId = null;
+}
+
+function salvarEdicaoUsuario() {
+  const nome = document.getElementById("editar-usuario-nome").value;
+  const senha = document.getElementById("editar-usuario-senha").value;
+  const tipo = document.getElementById("editar-usuario-tipo").value;
+
+  if (!nome) {
+    alert("Nome do usuário é obrigatório.");
+    return;
+  }
+
+  // Enviar para backend
+  console.log("Usuário editado:", {
+    id: usuarioEditandoId,
+    nome,
+    senha: senha || "(sem alteração)",
+    tipo,
+  });
+
+  fecharModalEdicao();
+}
+
+// Exemplo: ao clicar em editar (você pode adaptar isso com base nos dados reais)
+document.querySelectorAll(".btn.blue").forEach((btn) => {
+  if (btn.textContent.includes("Editar")) {
+    btn.addEventListener("click", () => {
+      // Dados fictícios para exemplo:
+      const usuario = {
+        id: 1,
+        nome: btn.closest("tr").children[0].textContent,
+        tipo: btn.closest("tr").children[1].textContent,
+      };
+      abrirModalEdicao(usuario);
+    });
+  }
+});
