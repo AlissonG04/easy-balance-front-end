@@ -58,5 +58,31 @@
         <button class="btn green novo-usuario">Novo Usuário</button>
       </div>
     </main>
+    <div id="modal-usuario" class="modal-overlay">
+      <div class="modal">
+        <h2>Novo Usuário</h2>
+
+        <label>Usuário:</label>
+        <input type="text" id="novo-usuario-nome" />
+
+        <label>Senha:</label>
+        <input type="password" id="novo-usuario-senha" />
+
+        <label>Tipo:</label>
+        <select id="novo-usuario-tipo">
+          <option value="Administrador">Administrador</option>
+          <option value="Desktop">Desktop</option>
+          <option value="Operador">Operador</option>
+        </select>
+
+        <div class="modal-actions">
+          <button class="btn blue" onclick="salvarNovoUsuario()">Salvar</button>
+          <button class="btn red" onclick="fecharModalUsuario()">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+    <script src="./usuarios.js"></script>
   </body>
 </html>
