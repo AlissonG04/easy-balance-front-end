@@ -68,11 +68,11 @@ function salvarEdicaoUsuario() {
   fecharModalEdicao();
 }
 
-//Adaptar com base real da API - Fururamente
+//Adaptar com base real da API - Futuramente
 document.querySelectorAll(".btn.blue").forEach((btn) => {
   if (btn.textContent.includes("Editar")) {
     btn.addEventListener("click", () => {
-      // Dados fictícios para exemplo:
+      // Dados fictícios para exemplo
       const usuario = {
         id: 1,
         nome: btn.closest("tr").children[0].textContent,
