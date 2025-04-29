@@ -1,0 +1,87 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #d3d3d3;
+}
+
+.header {
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  height: 40px;
+}
+
+.logo-text {
+  font-size: 18px;
+  color: #004f9f;
+}
+
+.balancas-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  padding: 60px 0;
+}
+
+.balanca-card {
+  background-color: white;
+  padding: 30px;
+  width: 320px;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.balanca-card h2 {
+  margin-top: 0;
+}
+
+.actions {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn {
+  padding: 8px 14px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+}
+
+.btn.green {
+  background-color: #2e7d32;
+}
+
+.btn.red {
+  background-color: #c62828;
+}
+
+.btn.blue {
+  background-color: #0056b3;
+}
+
+.display {
+  margin-top: 20px;
+  font-size: 48px;
+  font-weight: bold;
+  background-color: #e0e0e0;
+  padding: 20px;
+  border-radius: 4px;
+}
