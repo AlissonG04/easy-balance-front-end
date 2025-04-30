@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Acompanhamento de Complemento</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./acompanhar-complemento.css" />
+  </head>
+  <body>
+    <header class="header">
+      <img src="/src/assets/logo.png" alt="Easy Balance Logo" class="logo" />
+      <span class="logo-text"><strong>EASY</strong> BALANCE</span>
+    </header>
+
+    <main class="container">
+      <div class="box">
+        <label>Peso Desejado:</label>
+        <div class="peso-display cinza" id="peso-desejado">24000</div>
+
+        <label>Peso Atual:</label>
+        <div class="peso-display verde" id="peso-atual">24000</div>
+
+        <button class="btn green" onclick="finalizarComplemento()">
+          Finalizar
+        </button>
+      </div>
+    </main>
+
+    <script src="acompanhar-complemento.js"></script>
+  </body>
+</html>
